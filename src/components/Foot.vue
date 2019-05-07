@@ -39,7 +39,6 @@ export default {
 </script>
 
 <style scoped>
-
 .bottom-nav {
   position: fixed;
   width: 100%;
