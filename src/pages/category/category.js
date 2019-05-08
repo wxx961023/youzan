@@ -39,10 +39,14 @@ new Vue({
             axios.get(url.rank).then(res=>{
                 this.rankData = res.data.data                
             })
-            console.log(this.rankData.hotGoods)
         }
     },
     components:{
         Foot,
+    },
+    filters:{
+        numFilter(price){
+            return price.toFixed(2)
+        }
     }
 })
