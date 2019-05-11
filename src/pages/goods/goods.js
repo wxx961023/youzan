@@ -4,6 +4,8 @@ import './goods.css'
 import './goods_theme.css'
 import './goods_mars.css'
 import './goods_sku.css'
+import './goods_transition.css'
+
 
 import Vue from 'vue'
 import axios from 'axios'
@@ -11,19 +13,23 @@ import url from 'js/api.js'
 import qs from 'qs'
 import Swipe from 'components/Swipe.vue'
 
-let {id} = qs.parse(location.search.substr(1))
+let {id} = qs.parse(location.search.substr(1)) //这东西太重要了 贯穿整个页面数据的传递
 let detailTab = ['商品详情','本店成交']
 
 new Vue({
   el:'#app',
   data:{
+    id,
     details:null,
     detailTab,
     tabIndex:0,
     dealLists:null,
     bannerLists:null,
     skuType:1,
-    showSku:false
+    showSku:false,
+    skuNum:1,
+    isAddCart:false,
+    showAddMessage:false
   },
   created(){
     this.getDetails()
@@ -55,6 +61,26 @@ new Vue({
     chooseSku(type){
       this.skuType = type
       this.showSku = true
+    },
+    changeSkuNum(num){
+      if(num<0 && this.skuNum === 1){return}
+      this.skuNum += num
+    },
+    addCart(){
+      axios.post(url.addCart,{
+        id,
+        number:this.skuNum
+      }).then(res=>{
+        if(res.data.status === 200){
+          this.showSku = false //加入购物车之后把弹窗关闭
+          this.isAddCart = true
+          this.showAddMessage = true
+
+          setTimeout(()=>{
+            this.showAddMessage = false
+          },800)
+        }
+      })
     }
   },
   filters:{
