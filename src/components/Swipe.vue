@@ -38,7 +38,7 @@ export default {
 </script>
 
 <style scoped>
-.swiper-slide img {
+.swiper-slide img{
     height: 100%;
     width: 100%;
 }
