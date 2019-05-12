@@ -5,6 +5,7 @@ import './cart.css'
 import Vue from 'vue'
 import axios from 'axios'
 import url from 'js/api.js'
+import { list } from 'postcss';
 
 new Vue({
   el:'.container',
@@ -18,8 +19,13 @@ new Vue({
   },
   methods:{
     getList(){
-      axios.get(url.cartLists).then(res=>{
+      axios.get(url.cartLists).then(res => {
         this.lists = res.data.cartList
+        this.lists.forEach(shop=>{
+          shop.goodsList.forEach(good => {
+            good.checked = true
+          })
+        })
       })
     }
   },
