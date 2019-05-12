@@ -82,7 +82,7 @@
                             </div>
                           </div>
                           <div class="price c-orange">
-                            ¥<span>189.00 </span></div>
+                            ¥<span>{{good.price | numFilter}} </span></div>
                         </div>
                         <div class="error-box"></div>
                       </div>
@@ -139,12 +139,12 @@
             <div class="go-shop-tip js-go-shop-tip c-orange font-size-12">
               你需要分开结算每个店铺的商品哦~
             </div>
-            <div class="bottom-cart clear-fix">
+            <div class="bottom-cart clear-fix" @click="selectAll">
               <div class="select-all"><span class="check" :class="{checked:allSelected}"></span> 全选
               </div>
               <!-- 显示状态 -->
-              <div class="total-price" style="display: none;">
-                合计：¥<span class="js-total-price" style="color: rgb(255, 102, 0);">684.99</span>
+              <div class="total-price">
+                合计：¥<span class="js-total-price" style="color: rgb(255, 102, 0);">{{total | numFilter}}</span>
                 <p class="c-gray-dark">不含运费</p>
               </div>
               <button href="javascript:;" disabled="disabled"

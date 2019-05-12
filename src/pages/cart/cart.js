@@ -10,7 +10,8 @@ import { list } from 'postcss';
 new Vue({
   el:'.container',
   data:{
-    lists:null
+    lists:null,
+    total:0
   },
   computed:{
     allSelected:{
@@ -22,9 +23,31 @@ new Vue({
         }
         return false
       },
-      set(){
-
+      set(newVal){
+        this.lists.forEach(shop=>{
+          shop.checked = newVal
+          shop.goodsList.forEach(good=>{
+            good.checked = newVal
+          })
+        })
       }
+    },
+    selectLists(){
+      if(this.lists&&this.lists.length){
+        let arr = []
+        let total  = 0
+        this.lists.forEach(shop=>{
+          shop.goodsList.forEach(good=>{
+            if(good.checked){
+              arr.push(good)
+              total += good.price * good.number
+            }
+          })
+        })
+        this.total = total
+        return arr
+      }
+      return []
     }
   },
   created(){
@@ -54,6 +77,9 @@ new Vue({
       shop.goodsList.forEach(good=>{
         good.checked = shop.checked
       })
+    },
+    selectAll(){
+      this.allSelected = !this.allSelected
     }
   },
   filters:{
