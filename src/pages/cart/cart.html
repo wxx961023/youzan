@@ -37,9 +37,10 @@
                   </div>
                   <a class="shop-title">
                   <i class="custom-store-img">店铺：</i>{{shop.shopTitle}}</a>
+                  <!-- 点击编辑，状态的切换 -->
                 <a href="javascript:;" data-type="cart" 
                   class="j-edit-list pull-right c-blue font-size-12 edit-list"
-                  @click="edit(shop,shopIndex)"
+                  @click="edit(shop,shopIndex)" 
                 >
                   {{shop.editingMsg}}
                 </a>
@@ -91,7 +92,7 @@
                         </div>
                         <div class="error-box"></div>
                       </div>
-                      <div class="delete-btn"><span>删除</span></div>
+                      <div class="delete-btn" @click="remove(shop,shopIndex,good,goodIndex)"><span>删除</span></div>
                     </div>
                   </li>
                 </ul>
@@ -131,7 +132,7 @@
                       </div>
                       <div class="error-box">商品已售罄</div>
                     </div>
-                    <div class="delete-btn"><span>删除</span></div>
+                    <div class="delete-btn"></div><span>删除</span></div>
                   </div>
                 </li>
               </ul>
@@ -169,18 +170,17 @@
           </div>
         </div>
       </div>
-    </div>
-    <div id="heQD1ZYb2p" style="height:100%;position: fixed;top:0px;left:0px;right: 0px;background-color:rgba(0,0,0,0.7); z-index:1000;transition: none 0.2s ease;opacity: 1;"></div>
-    <div id="RKinAL9BX5" class="popout-confirm popout-box" style="overflow:hidden;position:absolute;z-index:1000;transition: opacity 300ms ease;top:50%;left:50%; transform:translate3d(-50%,-50%,0px); visibility: visible;border-radius: 4px;background:white;width: 270px;padding:15px;opacity: 1;">
-      <div class="confirm-content font-size-14" style="line-height: 20px;   padding:5px 5px 10px;">
-        确定要删除该商吗？
+    <div id="heQD1ZYb2p" v-show="removePopup" style="height:100%;position: fixed;top:0px;left:0px;right: 0px;background-color:rgba(0,0,0,0.7); z-index:1000;transition: none 0.2s ease;opacity: 1;"></div>
+    <div id="RKinAL9BX5" v-show="removePopup" class="popout-confirm popout-box" style="overflow:hidden;position:absolute;z-index:1000;transition: opacity 300ms ease;top:50%;left:50%; transform:translate3d(-50%,-50%,0px); visibility: visible;border-radius: 4px;background:white;width: 270px;padding:15px;opacity: 1;">
+      <div class="confirm-content font-size-14" style="line-height: 20px; padding:5px 5px 10px;">
+        {{removeMsg}}
       </div>
       <hr style="margin: 9px -15px 10px;">
       <div class="btn-2-1">
-        <p class="js-cancel center font-size-16" style="padding-top: 5px;">取消</p>
+        <p class="js-cancel center font-size-16" style="padding-top: 5px;" @click="removePopup=false">取消</p>
       </div>
       <div class="btn-2-1">
-        <p class="js-cancel center c-green font-size-16" style="padding-top: 5px;">确定</p>
+        <p class="js-cancel center c-green font-size-16" style="padding-top: 5px;" @click="removeConfirm">确定</p>
       </div>
     </div>
   </div>

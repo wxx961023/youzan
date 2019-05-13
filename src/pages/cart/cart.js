@@ -13,7 +13,10 @@ new Vue({
     lists:null,
     total:0,
     editingShop:null,
-    editingShopIndex:-1
+    editingShopIndex:-1,
+    removePopup:false,
+    removeData:null,
+    removeMsg:null
   },
   computed:{
     allSelected:{
@@ -119,6 +122,7 @@ new Vue({
       let attr = this.editingShop ? 'allRemoveSelected' : 'allSelected'
       this[attr] = !this[attr]
     },
+    //正常状态和编辑状态的切换
     edit(shop,shopIndex){
       shop.editing = !shop.editing
       shop.editingMsg = shop.editing ? '完成':'编辑'
@@ -148,11 +152,68 @@ new Vue({
       }).then(res=>{
         good.number--
       })
+    },
+    remove(shop,shopIndex,good,goodIndex){
+      this.removePopup = true
+      this.removeData = {shop,shopIndex,good,goodIndex}
+      this.removeMsg = '确定要删除商品吗？'
+    },
+    removeList(){
+      this.removePopup = true
+      this.removeMsg = `确定将所选${this.removeLists.length}个商品删除？'`
+    },
+    removeConfirm(){
+      if(this.removeMsg === '确定要删除商品吗？'){
+        let {shop,shopIndex,good,goodIndex} = this.removeData
+        axios.post(url.cartRemove,{
+          id:good.id
+        }).then(res=>{
+          shop.goodsList.splice(goodIndex,1)
+          if(!shop.goodsList.length){
+            this.lists.splice(shopIndex,1)
+            this.removeShop()
+          }
+          this.removePopup = false
+        })
+      }else{
+        let ids=[]
+        this.removeLists.forEach(good=>{
+          ids.push(good.id)
+        })
+        axios.post(url.cartMrremove,{
+          ids
+        }).then(res=>{
+          let arr =[]
+          this.editingShop.goodsList.forEach(good=>{
+            let index = this.removeLists.findIndex(item=>{
+              return item.id == good.id 
+            })
+            if(index === -1){
+              arr.push(good)
+            }
+          })
+          if(arr.length){
+            this.editingShop.goodsList = arr
+          }else{
+            this.lists.splice(this.editingShopIndex,1)
+            this.removeShop()
+          }
+          this.removePopup = false
+        })
+      }
+    },
+    removeShop(){
+      this.editingShop = null,
+      this.editingShopIndex = -1,
+      this.lists.forEach(shop=>{
+        shop.editing = false
+        shop.editingMsg = '编辑'
+      })
     }
   },
   filters:{
     numFilter(price){
       return price.toFixed(2)
     }
-  }
+  },
 })
