@@ -59,6 +59,8 @@ new Vue({
         let lists = res.data.cartList
         lists.forEach(shop=>{
           shop.checked = true
+          shop.editing = false
+          shop.editingMsg = '编辑'
           shop.goodsList.forEach(good=>{
             good.checked = true
           })
@@ -80,6 +82,16 @@ new Vue({
     },
     selectAll(){
       this.allSelected = !this.allSelected
+    },
+    edit(shop,shopIndex){
+      shop.editing = !shop.editing
+      shop.editingMsg = shop.editing ? '完成':'编辑'
+      this.lists.forEach((item,i)=>{
+        if(shopIndex !== i){
+          item.editing = false
+          item.editingMsg = shop.editing ? '':'编辑'
+        }
+      })
     }
   },
   filters:{
