@@ -1,9 +1,8 @@
 import axios from 'axios'
-import url from 'js/api.js'
 
 function fetch(url,data){
   return new Promise((resolve,reject)=>{
-    axios.post(url.data).then(res=>{
+    axios.post(url,data).then(res=>{
       let status = res.data.status
       if(status === 200){
         resolve(res)
@@ -14,9 +13,10 @@ function fetch(url,data){
       }
       resolve(res)
     }).catch(error=>{
-      reject(res)
+      reject(error)
     })
   })
 }
 
 export default fetch
+

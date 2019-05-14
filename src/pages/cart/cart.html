@@ -148,8 +148,8 @@
             <div class="go-shop-tip js-go-shop-tip c-orange font-size-12">
               你需要分开结算每个店铺的商品哦~
             </div>
-            <div class="bottom-cart clear-fix"  @click="selectAll">
-              <div class="select-all" ><span class="check" :class="{checked:editingShop?allRemoveSelected:allSelected}"></span> 全选
+            <div class="bottom-cart clear-fix"  >
+              <div class="select-all" ><span @click="selectAll" class="check" :class="{checked:editingShop?allRemoveSelected:allSelected}"></span> 全选
               </div>
               <!-- 显示状态 -->
               <div class="total-price" v-show="!editingShop">
