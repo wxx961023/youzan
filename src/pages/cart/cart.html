@@ -153,17 +153,20 @@
                 合计：¥<span class="js-total-price" style="color: rgb(255, 102, 0);">{{total | numFilter}}</span>
                 <p class="c-gray-dark">不含运费</p>
               </div>
-              <button href="javascript:;" :disabled="!selectLists.length"
+              <button href="javascript:;" 
+                :disabled="!selectLists.length"
                 class="js-go-pay btn btn-orange-dark font-size-14"
                 v-show="!editingShop"
               >
                 结算 (3)
               </button>
               <!-- 编辑状态 -->
-              <button href="javascript:;" :disabled="!removeLists.length" 
+              <button href="javascript:;" 
+                :disabled="!removeLists.length" 
                 class="j-delete-goods btn font-size-14 btn-red"
                 v-show="editingShop"
-              >
+                @click="removeList"
+              > <!-- @click="removeList" 删除多个  -->
                 删除
               </button>
             </div>

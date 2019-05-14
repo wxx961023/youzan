@@ -16,19 +16,19 @@ new Vue({
     editingShopIndex:-1,
     removePopup:false,
     removeData:null,
-    removeMsg:null
+    removeMsg:''
   },
   computed:{
-    allSelected:{
-      get(){
+    allSelected:{ // allSelected正常情况下全选
+      get(){      //判断店铺进而判断全选状态
         if(this.lists&&this.lists.length){
-          return this.lists.every(shop=>{
+          return this.lists.every(shop=>{  //判断店铺的checked
             return shop.checked
           })
         }
         return false
       },
-      set(newVal){
+      set(newVal){  //全选状态决定店铺和商品状态
         this.lists.forEach(shop=>{
           shop.checked = newVal
           shop.goodsList.forEach(good=>{
@@ -54,7 +54,7 @@ new Vue({
       }
     },
     // 这是为了之后准备
-    selectLists(){
+    selectLists(){  //selectLists正常情况选中的商品列表
       if(this.lists&&this.lists.length){
         let arr = []
         let total  = 0
@@ -70,8 +70,8 @@ new Vue({
         return arr
       }
       return []
-    },
-    removeLists(){
+    }, 
+    removeLists(){ //编辑情况下商品选中--要删除的商品列表
       if(this.editingShop){
         let arr = []
         this.editingShop.goodsList.forEach(good=>{
@@ -79,6 +79,7 @@ new Vue({
             arr.push(good)
           }
         })
+        console.log(arr)
         return arr
       }
       return []
@@ -105,7 +106,7 @@ new Vue({
       })
     },
     selectGood(shop,good){
-      let attr = this.editingShop ? 'removeChecked' : 'checked'
+      let attr = this.editingShop ? 'removeChecked' : 'checked' //判断是在编辑还是正常状态下 
       good[attr] = !good[attr]
       shop[attr] = shop.goodsList.every(good=>{
         return good[attr]
@@ -120,6 +121,7 @@ new Vue({
     },
     selectAll(){
       let attr = this.editingShop ? 'allRemoveSelected' : 'allSelected'
+      console.log(this.removeLists)
       this[attr] = !this[attr]
     },
     //正常状态和编辑状态的切换
@@ -153,17 +155,19 @@ new Vue({
         good.number--
       })
     },
+    //单删
     remove(shop,shopIndex,good,goodIndex){
       this.removePopup = true
       this.removeData = {shop,shopIndex,good,goodIndex}
-      this.removeMsg = '确定要删除商品吗？'
+      this.removeMsg = '确定要删除该商品吗？'
     },
+    //删除多个
     removeList(){
       this.removePopup = true
-      this.removeMsg = `确定将所选${this.removeLists.length}个商品删除？'`
+      this.removeMsg = `确定将所选${this.removeLists.length}个商品删除？`
     },
     removeConfirm(){
-      if(this.removeMsg === '确定要删除商品吗？'){
+      if(this.removeMsg === '确定要删除该商品吗？'){
         let {shop,shopIndex,good,goodIndex} = this.removeData
         axios.post(url.cartRemove,{
           id:good.id
@@ -176,14 +180,14 @@ new Vue({
           this.removePopup = false
         })
       }else{
-        let ids=[]
+        let ids = []
         this.removeLists.forEach(good=>{
           ids.push(good.id)
         })
         axios.post(url.cartMrremove,{
           ids
         }).then(res=>{
-          let arr =[]
+          let arr = []
           this.editingShop.goodsList.forEach(good=>{
             let index = this.removeLists.findIndex(item=>{
               return item.id == good.id 
