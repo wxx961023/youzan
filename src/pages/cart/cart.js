@@ -5,7 +5,7 @@ import './cart.css'
 import Vue from 'vue'
 import axios from 'axios'
 import url from 'js/api.js'
-import { list } from 'postcss';
+import Velocity from 'velocity-animate'
 
 new Vue({
   el:'.container',
@@ -79,7 +79,6 @@ new Vue({
             arr.push(good)
           }
         })
-        console.log(arr)
         return arr
       }
       return []
@@ -120,8 +119,7 @@ new Vue({
       })
     },
     selectAll(){
-      let attr = this.editingShop ? 'allRemoveSelected' : 'allSelected'
-      console.log(this.removeLists)
+      let attr = this.editingShop ? 'allRemoveSelected' : 'allSelected' //allRemoveSelected默认是false，当点击selctAll取反了 变成true
       this[attr] = !this[attr]
     },
     //正常状态和编辑状态的切换
@@ -213,7 +211,24 @@ new Vue({
         shop.editing = false
         shop.editingMsg = '编辑'
       })
+    },
+    start(e,good){
+      good.startX = e.changedTouches[0].clientX
+    },
+    end(e,shopIndex,good,goodIndex){
+      let endX = e.changedTouches[0].clientX
+      let left = '0'
+      if(good.startX - endX > 100){
+        left = '-60px'
+      }
+      if(endX - good.startX >100){
+        left = '0px'
+      }
+      Velocity(this.$refs[`goods-${shopIndex}-${goodIndex}`],{
+        left
+      })
     }
+    
   },
   filters:{
     numFilter(price){

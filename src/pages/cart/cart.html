@@ -49,7 +49,10 @@
                 <ul class="js-list block block-list block-list-cart border-0">
                   <li class="block-item block-item-cart"
                       :class="{editing:shop.editing}"
-                     v-for="(good,goodIndex) in shop.goodsList"
+                      v-for="(good,goodIndex) in shop.goodsList"
+                      :ref="'goods-'+shopIndex+'-'+goodIndex"
+                      @touchstart="start($event,good)"
+                      @touchend="end($event,shopIndex,good,goodIndex)"
                     >
                     <div>
                       <div class="check-container"   @click="selectGood(shop,good)">
@@ -145,8 +148,8 @@
             <div class="go-shop-tip js-go-shop-tip c-orange font-size-12">
               你需要分开结算每个店铺的商品哦~
             </div>
-            <div class="bottom-cart clear-fix" @click="selectAll">
-              <div class="select-all"><span class="check" :class="{checked:editingShop?allRemoveSelected:allSelected}"></span> 全选
+            <div class="bottom-cart clear-fix"  @click="selectAll">
+              <div class="select-all" ><span class="check" :class="{checked:editingShop?allRemoveSelected:allSelected}"></span> 全选
               </div>
               <!-- 显示状态 -->
               <div class="total-price" v-show="!editingShop">
