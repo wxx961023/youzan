@@ -9,6 +9,8 @@ import Velocity from 'velocity-animate'
 import Cart from 'js/cartService.js'
 import fetch from 'js/fetch.js'
 
+let startX = 0;
+let endX = 0;
 
 new Vue({
   el:'.container',
@@ -19,7 +21,7 @@ new Vue({
     editingShopIndex:-1,
     removePopup:false,
     removeData:null,
-    removeMsg:''
+    removeMsg:'',
   },
   computed:{
     allSelected:{ // allSelected正常情况下全选
@@ -85,7 +87,7 @@ new Vue({
         return arr
       }
       return []
-    }
+    },
   },
   created(){
     this.getList()
@@ -130,13 +132,18 @@ new Vue({
       shop.editing = !shop.editing
       shop.editingMsg = shop.editing ? '完成':'编辑'
       this.lists.forEach((item,i)=>{
+        item.goodsList.forEach(good=>{
+          let ele = this.$refs[`goods-${good.id}`][0]
+					ele.style.transform = 'translateX(0)';
+        })
         if(shopIndex !== i){
           item.editing = false
-          item.editingMsg = shop.editing ? '':'编辑'
+          item.editingMsg = shop.editing ? '':'编辑'  
         }
       })
       this.editingShop = shop.editing ? shop : null
       this.editingShopIndex = shop.editing ? shopIndex : -1
+      
     },
     add(good){
       // axios.post(url.addCart,{
@@ -157,9 +164,9 @@ new Vue({
       // }).then(res=>{
       //   good.number--
       // })
-      Cart.reduce(good.id).then(res=>{
-        good.number--
-      })
+      if(good.number===1)return
+      good.number--
+
     },
     //单删
     remove(shop,shopIndex,good,goodIndex){
@@ -184,6 +191,8 @@ new Vue({
             this.removeShop()
           }
           this.removePopup = false
+          let ele = this.$refs[`goods-${good.id}`][0]
+          ele.style.transform = 'translateX(0)'
         })
       }else{
         let ids = []
@@ -220,23 +229,20 @@ new Vue({
         shop.editingMsg = '编辑'
       })
     },
-    start(e,good){
-      good.startX = e.changedTouches[0].clientX
+    start(e){
+       startX = e.changedTouches[0].clientX
     },
-    end(e,shopIndex,good,goodIndex){
-      let endX = e.changedTouches[0].clientX
-      let left = '0'
-      if(good.startX - endX > 100){
-        left = '-60px'
+    end(e,good){
+      endX = e.changedTouches[0].clientX
+      if(!this.editingShop){ //不是在编辑状态才能执行这个
+        let ele = this.$refs[`goods-${good.id}`][0]
+        if(startX - endX > 100){
+          ele.style.transform = 'translateX(-60px)'
+        }else if(endX - startX> 100){
+          ele.style.transform = 'translateX(0)'
+        }
       }
-      if(endX - good.startX >100){
-        left = '0px'
-      }
-      Velocity(this.$refs[`goods-${shopIndex}-${goodIndex}`],{
-        left
-      })
     }
-    
   },
   filters:{
     numFilter(price){
