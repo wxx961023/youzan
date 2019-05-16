@@ -1,53 +1,69 @@
 <template>
   <div class="container" style="min-height: 597px;">
-    <div class="block-list address-list section section-first js-no-webview-block">
+    <div class="block-list address-list section section-first js-no-webview-block" v-if="lists&&lists.length">
       <a
         class="block-item js-address-item address-item"
-        @click="toEdit"
+        v-for="list in lists"
+        :key="list.id"
+        :class="{'address-item-default':list.isDefault}"
+        @click="toEdit(list)"
       >
-        <div class="address-title">tony 13112345678</div>
-        <p>广东省珠海市香洲区南方软件园</p>
-        <a class="edit">修改</a>
-      </a>
-      <a
-        class="block-item js-address-item address-item address-item-default"
-        href="https://pfmarket.youzan.com/user/address/form?m_alias=3nu78u467kddj&amp;id=69150193&amp;from="
-      >
-        <div class="address-title">tony 13112345678</div>
-        <p>北京市北京市东城区天安门</p>
+        <!-- 这里的edit的的入口 -->
+        <div class="address-title">{{list.name}} {{list.tel}}</div>
+        <p>{{list.provinceName}}{{list.cityName}}{{list.districtName}}{{list.address}}</p>
+        <a class="edit">修改</a> 
       </a>
     </div>
+    <div v-if="lists&&!lists.length">
+      没有地址，请添加
+    </div>
+
     <div class="block stick-bottom-row center">
       <router-link
         class="btn btn-blue js-no-webview-block js-add-address-btn"
-        to="/address/form"
-      >新增地址</router-link>
+        :to="{name:'form',query:{type:'add'}}"
+      >
+        新增地址
+      </router-link>
     </div>
   </div>
 </template>
 
 <script>
 import Address from 'js/addressService.js'
+import axios from 'axios'
+import url from 'js/api.js'
+
 export default {
   data(){
     return {
-      list:null
+      lists:null
       }
     },
     created() {
-      Address.list().then(res=>{
-        this.list = res.data.lists
-      })
+      // Address.list().then(res=>{
+      //   this.lists = res.data.lists
+      // })
+      this.getLists()
     },
   methods:{
-    toEdit(){
-      this.$router.push({path:'/address/form'})
+    getLists(){
+      axios.get(url.addressList).then(res=>{
+        this.lists = res.data.lists
+      })
+    }
+    ,
+    toEdit(list){
+      this.$router.push({name:'form',query:{
+        type:'edit',
+        instance: list
+      }})
     }
   }
 }
 </script>
 
 <style scoped>
-@import "./address_base.css";
-@import "./address.css";
+  @import "./address_base.css";
+  @import "./address.css";
 </style>

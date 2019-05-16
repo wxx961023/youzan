@@ -14,7 +14,7 @@ class Address{
   static update(data){
     return fetch(url.addressUpdate,data)
   }
-  static list(id){
+  static setDefault(id){
     return fetch(url.addressSetDefault,id)
   }
 }
