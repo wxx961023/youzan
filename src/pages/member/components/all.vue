@@ -8,7 +8,7 @@
         :class="{'address-item-default':list.isDefault}"
         @click="toEdit(list)"
       >
-        <!-- 这里的edit的的入口 -->
+        <!-- 这里的edit的的入口 这是编程式路由，看上面的@click="toEdit(list)-->
         <div class="address-title">{{list.name}} {{list.tel}}</div>
         <p>{{list.provinceName}}{{list.cityName}}{{list.districtName}}{{list.address}}</p>
         <a class="edit">修改</a> 
@@ -35,24 +35,32 @@ import axios from 'axios'
 import url from 'js/api.js'
 
 export default {
-  data(){
-    return {
-      lists:null
-      }
-    },
-    created() {
-      // Address.list().then(res=>{
-      //   this.lists = res.data.lists
-      // })
-      this.getLists()
-    },
-  methods:{
-    getLists(){
-      axios.get(url.addressList).then(res=>{
-        this.lists = res.data.lists
-      })
+  // data(){
+  //   return {
+  //     lists:null
+  //     }
+  //   },
+  computed:{
+    lists(){
+      return this.$store.state.lists
     }
-    ,
+  },
+  created() {
+    // Address.list().then(res=>{
+    //   this.lists = res.data.lists
+    // })
+    // this.getLists()
+    if(!this.lists){
+      this.$store.dispatch('getLists')
+    }
+  },
+  methods:{
+    // getLists(){
+    //   axios.get(url.addressList).then(res=>{
+    //     this.lists = res.data.lists
+    //   })
+    // }
+    // , 
     toEdit(list){
       this.$router.push({name:'form',query:{
         type:'edit',

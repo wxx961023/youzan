@@ -1,4 +1,5 @@
 import Address from 'js/addressService';
+import { CLIENT_RENEG_LIMIT } from 'tls';
 
 export default {
   data(){
@@ -15,6 +16,11 @@ export default {
       addressData:require('js/address.json'),
       cityList:null,
       districtList:null
+    }
+  },
+  computed: {
+    lists(){
+      return this.$store.state.lists
     }
   },
   created() {
@@ -37,31 +43,43 @@ export default {
       let {name,tel,provinceValue,cityValue,districtValue,address} = this
       let data = {name,tel,provinceValue,cityValue,districtValue,address}
       if(this.type==='add'){
-        Address.add(data).then(res=>{
-          this.$router.go(-1)
-        })
+        // Address.add(data).then(res=>{
+        //   this.$router.go(-1)
+        // })
+
+        //这里调用函数，进入vuex/index.js
+        this.$store.dispatch('addAction',data)
       }
       if(this.type==='edit'){
         data.id = this.id
-        Address.update(data).then(res=>{
-          this.$router.go(-1)
-        })
+        // Address.update(data).then(res=>{
+        //   this.$router.go(-1)
+        // })
+        this.$store.dispatch('updateAction',data)
       }
     },
     remove(){
       if(window.confirm('确实删除？')){
-        Address.remove(this.id).then(res=>{
-          this.$router.go(-1)
-        })
+        // Address.remove(this.id).then(res=>{
+        //   this.$router.go(-1)
+        // })
+        this.$store.dispatch('removeAction',this.id)
       }
     },
     setDefault(){
-      Address.setDefault(this.id).then(res=>{
-        this.$router.go(-1)
-      })
+      // Address.setDefault(this.id).then(res=>{
+      //   this.$router.go(-1)
+      // })
+      this.$store.dispatch('setDefaultAction',this.id)
     }
   },
   watch: {
+    lists:{
+      handler(){
+        this.$router.go(-1)
+      },
+      deep:true
+    },
     provinceValue(val){
       if(val===-1)return
       let list = this.addressData.list
@@ -74,7 +92,6 @@ export default {
 
       if(this.type === 'edit'){
         this.cityValue = parseInt(this.instance.cityValue)
-
       }
     },
     cityValue(val){
