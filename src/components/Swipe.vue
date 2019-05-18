@@ -42,7 +42,7 @@ export default {
     height: 100%;
     width: 100%;
 }
-.swiper-pagination{
+.swiper-container{
     text-align: center;
 }
 </style>

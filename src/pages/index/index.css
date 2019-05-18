@@ -210,6 +210,7 @@ only screen and (min-device-pixel-ratio:1.5) {
 }
 
 .swiper-container {
+  text-align: center;
   margin: 0 auto;
   position: relative;
   overflow: hidden;
@@ -1017,7 +1018,7 @@ only screen and (min-device-pixel-ratio:1.5) {
 .daily-title .home-more {
   display: block;
   width: 50px;
-  /* text-align: right; */
+  text-align: right;
   font-size: 12px;
   color: #909090
 }
